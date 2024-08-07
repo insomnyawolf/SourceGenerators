@@ -29,7 +29,7 @@ jobs:
         dotnet-version: '${{env.dotnetVersion}}'
 
     - name: Auth Nuget Feed 
-      run: dotnet nuget add source --username USERNAME --store-password-in-clear-text --password ${{secrets.GITHUB_TOKEN}} --name github "https://nuget.pkg.github.com/${{env.nugetNamespace}}/index.json"
+      run: dotnet nuget add source --username ${{github.repository_owner}} --store-password-in-clear-text --password ${{secrets.GITHUB_TOKEN}} --name github "https://nuget.pkg.github.com/${{env.nugetNamespace}}/index.json"
 
     - name: Create the package
       run: dotnet pack --nologo --force --verbosity ${{env.logLevel}} --output ${{env.outputDirectory}} ${{env.projectName}}
