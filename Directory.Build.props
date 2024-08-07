@@ -19,10 +19,33 @@ All the configs here can be overrided per project as required
 	<!-- Authors, Attributions, Urls and other configs -->
 	<PropertyGroup>
 		<Authors>insomnyawolf</Authors>
-		<Title>$(ProjectName)</Title>
+		<!--<Title>$(ProjectName)</Title>-->
 
 		<RepositoryType>git</RepositoryType>
 		<BaseRepositoryUrl>https://github.com/insomnyawolf/SourceGenerators</BaseRepositoryUrl>
+	</PropertyGroup>
+
+	<!-- Nuget Publish Settings -->
+	<PropertyGroup>
+		<!-- Paths are relative to the nuget package -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<!-- <PackageLicenseFile>LICENSE.md</PackageLicenseFile> -->
+		<!-- <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance> -->
+
+		<PackageId>$(Authors).$(ProjectName)</PackageId>
+		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+
+		<IncludeSource>True</IncludeSource>
+		<!-- Include source in theory includes symbols as well by default -->
+		<!-- <IncludeSymbols>True</IncludeSymbols> -->
+		<!-- 
+			We are not using the snupkg format because it splits
+			the nuget in 2, one with the library and one with the symbols
+			that way we would miss the chance of not needing to do anything to add the symbols to the nuget
+			which will be helpful if errors happen on other solution because we'll get better error messages
+		-->
+		<!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
 	</PropertyGroup>
 
 	<!-- Msbuild settings -->
@@ -32,7 +55,9 @@ All the configs here can be overrided per project as required
 	</PropertyGroup>
 
 	<!-- Version Config -->
-	<PropertyGroup Condition="'$(MSBuildTarget)' == 'pack'">
+	<!-- Looks like dynamic version numbers cause dotnet restore loop :( -->
+	<!-- https://github.com/dotnet/project-system/issues/1457 -->
+	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
 		<MajorVersion>0</MajorVersion>
 		<MinorVersion>0</MinorVersion>
 		<BuildNumber>0</BuildNumber>
@@ -114,29 +139,6 @@ All the configs here can be overrided per project as required
 			<!-- Namespace doesn't match folder structure -->
 			IDE0130;
 		</NoWarn>
-	</PropertyGroup>
-
-	<!-- Nuget Publish Settings -->
-	<PropertyGroup>
-		<!-- Paths are relative to the nuget package -->
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-
-		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>-->
-
-		<PackageId>$(Authors).$(Title).$(ProjectName)</PackageId>
-		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-
-		<IncludeSource>True</IncludeSource>
-		<!-- Include source in theory includes symbols as well by default -->
-		<!--<IncludeSymbols>True</IncludeSymbols>-->
-		<!-- 
-			We are not using the snupkg format because it splits
-			the nuget in 2, one with the library and one with the symbols
-			that way we would miss the chance of not needing to do anything to add the symbols to the nuget
-			which will be helpful if errors happen on other solution because we'll get better error messages
-		-->
-		<!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
 	</PropertyGroup>
 
 	<!-- Build Includes Config -->
