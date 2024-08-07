@@ -25,21 +25,26 @@ All the configs here can be overrided per project as required
 		<BaseRepositoryUrl>https://github.com/insomnyawolf/SourceGenerators</BaseRepositoryUrl>
 	</PropertyGroup>
 
-	<!-- Version Config -->
-	<Target Name="SetVersion" BeforeTargets="Build">
-		<PropertyGroup>
-			<MajorVersion>0</MajorVersion>
-			<MinorVersion>0</MinorVersion>
-			<BuildNumber>0</BuildNumber>
+	<!-- Msbuild settings -->
+	<PropertyGroup>
+		<NoLogo>true</NoLogo>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
 
-			<!--
-				Time is utc to avoid issues caused by compiling the nuget in machines on different timezones
-			-->
-			<!-- 
+	<!-- Version Config -->
+	<PropertyGroup Condition="'$(MSBuildTarget)' == 'pack'">
+		<MajorVersion>0</MajorVersion>
+		<MinorVersion>0</MinorVersion>
+		<BuildNumber>0</BuildNumber>
+
+		<!--
+			Time is utc to avoid issues caused by compiling the nuget in machines on different timezones
+		-->
+		<!-- 
 			Added a '.' between yyyyMMdd and HHmmss to avoid build errors
 			Otherwise the number is so big that creates an overflow that causes the build to error out
-			-->
-			<!-- 
+		-->
+		<!-- 
 			"Requiered" because of the previous step
 			
 			Added a preceding 99 to the HHmmss part because if the number start with 1 or several 0 they will be skipped 
@@ -47,17 +52,16 @@ All the configs here can be overrided per project as required
 			I picked 99 because it's not a valid time so it won't be confused
 			
 			the final version will look like this: 8.0.20240614.99105216
-			-->
+		-->
 
-			<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-			<!-- exceeds uint16 range and causes the compilation to fail if ge generate assembly info-->
-			<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</PatchVersion>
-			<BuildVersion>$([System.DateTime]::UtcNow.ToString("99HHmmss"))</BuildVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<!-- exceeds uint16 range and causes the compilation to fail if ge generate assembly info-->
+		<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</PatchVersion>
+		<BuildVersion>$([System.DateTime]::UtcNow.ToString("99HHmmss"))</BuildVersion>
 
-			<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</Version>
-			<PackageVersion>$(PackageVersion)</PackageVersion>
-		</PropertyGroup>
-	</Target>
+		<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</Version>
+		<PackageVersion>$(PackageVersion)</PackageVersion>
+	</PropertyGroup>
 
 	<!-- Project Config -->
 	<PropertyGroup>
