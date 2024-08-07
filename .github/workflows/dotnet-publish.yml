@@ -1,0 +1,39 @@
+name: "Build & Publish Nuget"
+
+# notes:
+
+# variables work weird, if they are not defined on the job it looks like they are not read at all
+
+on: workflow_dispatch
+    
+jobs:
+  PushNuget:
+    runs-on: ubuntu-latest
+    env:
+      # using 8 because it's preinstalled and it should weok as well
+      # dotnetVersion: 9.x.x
+      dotnetVersion: 8.x.x
+      projectName: 'SourceGeneratorHelpers'
+      outputDirectory: './SourceGeneratorHelpers/CompiledPackages/'
+      logLevel: 'normal'
+      nugetNamespace: 'insomnyawolf'
+    # quiet
+    # minimal
+    # normal
+    # detailed
+    # diagnostic
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '${{env.dotnetVersion}}'
+
+    - name: Auth Nuget Feed 
+      run: dotnet nuget add source --username USERNAME --store-password-in-clear-text --password ${{secrets.GITHUB_TOKEN}} --name github "https://nuget.pkg.github.com/${{env.nugetNamespace}}/index.json"
+
+    - name: Create the package
+      run: dotnet pack --nologo --force --verbosity ${{env.logLevel}} --output ${{env.outputDirectory}} ${{env.projectName}}
+
+    - name: Publish the package to Github Packages Repo
+      run: dotnet nuget push --skip-duplicate "${{env.outputDirectory}}**/*.symbols.nupkg" --source "github" --api-key ${{secrets.GITHUB_TOKEN}}
+
