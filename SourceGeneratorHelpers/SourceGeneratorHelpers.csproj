@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Embed Files Config -->
+	<ItemGroup>
+		<None Include="EmbedResources\**" />
+		<!-- WARNING "RESOURCE" as shown below TYPE MAKES THE ANALYZER FAIL-->
+		<!--<Resource Include="EmbedResources\*" />-->
+		<EmbeddedResource Include="EmbedResources\**" />
+		<Compile Remove="EmbedResources\Templates\*" />
+		<Compile Remove="EmbedResources\Static\SymbolHelpers.cs" />
+	</ItemGroup>
+</Project>

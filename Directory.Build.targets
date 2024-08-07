@@ -1,0 +1,19 @@
+<!--
+https://github.com/dotnet/project-system/issues/4353
+Before build Directory.Build.props
+After build Directory.Builds.targets
+-->
+
+<!--
+
+Configs here override any other config from previous steps but they are applied after the build is finished
+
+-->
+
+<Project>
+	<!--Project Config-->
+	<PropertyGroup>
+		<!-- Config override example -->
+		<!-- <Title>Potato</Title> -->
+	</PropertyGroup>
+</Project>
