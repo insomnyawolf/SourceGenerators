@@ -35,5 +35,5 @@ jobs:
       run: dotnet pack --nologo --force --verbosity ${{env.logLevel}} --output ${{env.outputDirectory}} ${{env.projectName}}
 
     - name: Publish the package to Github Packages Repo
-      run: dotnet nuget push --skip-duplicate "${{env.outputDirectory}}**/*.symbols.nupkg" --source "github" --api-key ${{secrets.GITHUB_TOKEN}}
+      run: dotnet nuget push --skip-duplicate "${{env.outputDirectory}}**/*.symbols.nupkg" --source "github"
 
