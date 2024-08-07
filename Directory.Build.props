@@ -20,25 +20,26 @@ All the configs here can be overrided per project as required
 	<PropertyGroup>
 		<Authors>insomnyawolf</Authors>
 		<Title>$(ProjectName)</Title>
-		
+
 		<RepositoryType>git</RepositoryType>
 		<BaseRepositoryUrl>https://github.com/insomnyawolf/SourceGenerators</BaseRepositoryUrl>
 	</PropertyGroup>
 
 	<!-- Version Config -->
-	<PropertyGroup>
-		<MajorVersion>0</MajorVersion>
-		<MinorVersion>0</MinorVersion>
-		<BuildNumber>0</BuildNumber>
+	<Target Name="SetVersion" BeforeTargets="Build">
+		<PropertyGroup>
+			<MajorVersion>0</MajorVersion>
+			<MinorVersion>0</MinorVersion>
+			<BuildNumber>0</BuildNumber>
 
-		<!--
-			Time is utc to avoid issues caused by compiling the nuget in machines on different timezones
-		-->
-		<!-- 
+			<!--
+				Time is utc to avoid issues caused by compiling the nuget in machines on different timezones
+			-->
+			<!-- 
 			Added a '.' between yyyyMMdd and HHmmss to avoid build errors
 			Otherwise the number is so big that creates an overflow that causes the build to error out
-		-->
-		<!-- 
+			-->
+			<!-- 
 			"Requiered" because of the previous step
 			
 			Added a preceding 99 to the HHmmss part because if the number start with 1 or several 0 they will be skipped 
@@ -46,16 +47,17 @@ All the configs here can be overrided per project as required
 			I picked 99 because it's not a valid time so it won't be confused
 			
 			the final version will look like this: 8.0.20240614.99105216
-		-->
+			-->
 
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<!-- exceeds uint16 range and causes the compilation to fail if ge generate assembly info-->
-		<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</PatchVersion>
-		<BuildVersion>$([System.DateTime]::UtcNow.ToString("99HHmmss"))</BuildVersion>
+			<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+			<!-- exceeds uint16 range and causes the compilation to fail if ge generate assembly info-->
+			<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</PatchVersion>
+			<BuildVersion>$([System.DateTime]::UtcNow.ToString("99HHmmss"))</BuildVersion>
 
-		<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</Version>
-		<PackageVersion>$(PackageVersion)</PackageVersion>
-	</PropertyGroup>
+			<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</Version>
+			<PackageVersion>$(PackageVersion)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
 	<!-- Project Config -->
 	<PropertyGroup>
@@ -64,7 +66,7 @@ All the configs here can be overrided per project as required
 		<ImplicitUsings>false</ImplicitUsings>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
-	
+
 	<!--SourceGenerator Specific Config-->
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -99,8 +101,14 @@ All the configs here can be overrided per project as required
 			https://learn.microsoft.com/en-us/nuget/reference/errors-and-warnings/
 			SA[XXXX]
 			https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
+			IDE[XXXX]
+			https://learn.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/
 		-->
 		<NoWarn>
+			<!-- Use primary constructor -->
+			IDE0290;
+			<!-- Namespace doesn't match folder structure -->
+			IDE0130;
 		</NoWarn>
 	</PropertyGroup>
 
@@ -114,7 +122,7 @@ All the configs here can be overrided per project as required
 
 		<PackageId>$(Authors).$(Title).$(ProjectName)</PackageId>
 		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-		
+
 		<IncludeSource>True</IncludeSource>
 		<!-- Include source in theory includes symbols as well by default -->
 		<!--<IncludeSymbols>True</IncludeSymbols>-->
@@ -134,7 +142,7 @@ All the configs here can be overrided per project as required
 		<!-- Avoid using wildcards here in azure pipelines, the won't work -->
 		<None Include="$(OutputPath)\$(ProjectName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<None Include="$(OutputPath)\$(ProjectName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		
+
 		<!-- Add the other files into the nuget -->
 		<None Include="$(ProjectDir)\$(PackageReadmeFile)" Pack="true" PackagePath="" />
 		<!-- <None Include="$(ProjectDir)\$(PackageLicenseFile)" Pack="true" PackagePath="" /> -->

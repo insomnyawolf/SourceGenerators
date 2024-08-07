@@ -12,8 +12,8 @@ namespace SourceGeneratorHelpers;
 
 public static class TemplateHelpers
 {
-    private static Assembly Assembly = Assembly.GetExecutingAssembly();
-    private static string[] ResourceNames = Assembly.GetManifestResourceNames();
+    private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+    private static readonly string[] ResourceNames = Assembly.GetManifestResourceNames();
 
     public static Stream GetEmbedFile(string filename)
     {

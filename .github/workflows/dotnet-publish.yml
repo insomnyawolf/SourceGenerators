@@ -16,7 +16,6 @@ jobs:
       projectName: 'SourceGeneratorHelpers'
       outputDirectory: './SourceGeneratorHelpers/CompiledPackages/'
       logLevel: 'normal'
-      nugetNamespace: 'insomnyawolf'
     # quiet
     # minimal
     # normal
@@ -29,11 +28,11 @@ jobs:
         dotnet-version: '${{env.dotnetVersion}}'
 
     - name: Auth Nuget Feed 
-      run: dotnet nuget add source --username ${{github.repository_owner}} --store-password-in-clear-text --password ${{secrets.GITHUB_TOKEN}} --name github "https://nuget.pkg.github.com/${{env.nugetNamespace}}/index.json"
+      run: dotnet nuget add source --username ${{github.repository_owner}} --store-password-in-clear-text --password ${{secrets.GITHUB_TOKEN}} --name github "https://nuget.pkg.github.com/${{github.repository_owner}}/index.json"
 
     - name: Create the package
       run: dotnet pack --nologo --force --verbosity ${{env.logLevel}} --output ${{env.outputDirectory}} ${{env.projectName}}
 
     - name: Publish the package to Github Packages Repo
-      run: dotnet nuget push --skip-duplicate "${{env.outputDirectory}}**/*.symbols.nupkg" --source "github"
+      run: dotnet nuget push --skip-duplicate "${{env.outputDirectory}}**/*.symbols.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source "github"
 
